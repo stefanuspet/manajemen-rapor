@@ -1,0 +1,86 @@
+Table users {
+  id integer [primary key]
+  username varchar
+  role enum("admin", "wali_kelas", "kepala_sekolah", "siswa")
+  created_at timestamp
+  update_at timestamp
+}
+
+Table siswa {
+  nisn integer [primary key]
+  user_id integer
+  nama varchar
+  jurusan_id integer
+  kelas_id integer
+  create_at timestamp
+  update_at timestamp
+}
+
+Table guru {
+  nip integer [primary key]
+  nama varchar
+  create_at timestamp
+  update_at timestamp
+}
+
+Table kelas {
+  id integer [primary key]
+  nama_kelas varchar
+  wali_kelas_id integer
+  create_at timestamp
+  update_at timestamp
+}
+
+Table jurusan {
+  id integer [primary key]
+  nama_jurusan varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table mapel {
+  id integer [primary key]
+  nama_mapel varchar
+  created_at timestamp
+  update_at timestamp
+}
+
+Table Extra {
+  id integer [primary key]
+  nama_extra varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table semester {
+  id integer [primary key]
+  nama_semester varchar
+  created_at timestamp
+  update_at timestamp
+}
+
+Table nilai {
+  id integer [primary key]
+  siswa_id integer 
+  mapel_id integer
+  nilai integer
+  capaian_kompetensi varchar
+  created_at timestamp
+  update_at timestamp
+}
+
+Table nilai_extrakulikuler {
+  id int [primary key]
+  siswa_id int 
+  extra_id int
+  nilai varchar
+}
+
+Table absensi {
+  id integer [primary key]
+  siswa_id integer
+  semester_id integer
+  status enum("Hadir", "Sakit", "Izin", "Alfa")
+  created_at timestamp
+  updated_at timestamp
+}
