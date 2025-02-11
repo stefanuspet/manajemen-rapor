@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('nilai', function (Blueprint $table) {
             $table->id();
-            $table->integer("nilai");;
+            $table->integer("nilai")->default(0);
             $table->string("capaian_kompetensi");
             $table->unsignedBigInteger("siswa_id");
             $table->unsignedBigInteger("mapel_id");

@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string("nama_kelas");
             $table->unsignedBigInteger("wali_kelas_id");
+            $table->unsignedBigInteger("jurusan_id");
 
             $table->foreign("wali_kelas_id")->references("id")->on("guru");
+            $table->foreign("jurusan_id")->references("id")->on("jurusan");
             $table->timestamps();
         });
     }

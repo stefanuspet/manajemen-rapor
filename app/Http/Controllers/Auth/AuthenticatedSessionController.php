@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,6 +19,20 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): Response
     {
+        if (Auth::check()) {
+            switch (Auth::user()->role) {
+                case 'admin':
+                    return redirect()->route('admin.dashboard');
+                case 'walikelas':
+                    return redirect()->route('wali.dashboard');
+                case 'kepala_sekolah':
+                    return redirect()->route('kepala.dashboard');
+                case 'siswa':
+                    return redirect()->route('siswa.dashboard');
+                default:
+                    break;
+            }
+        }
         return Inertia::render('Auth/Login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => session('status'),
@@ -29,20 +44,26 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        try {
+            $request->authenticate();
 
-        $request->session()->regenerate();
+            $request->session()->regenerate();
 
-        $user = Auth::user();
+            $user = Auth::user();
 
-        // Redirect berdasarkan role
-        return match ($user->role) {
-            'admin' => redirect()->intended(route('admin.dashboard')),
-            'wali_kelas' => redirect()->intended(route('wali.dashboard')),
-            'kepala_sekolah' => redirect()->intended(route('kepala.dashboard')),
-            'siswa' => redirect()->intended(route('siswa.dashboard')),
-            default => redirect()->intended(route('dashboard')),
-        };
+            // Redirect berdasarkan role
+            return redirect()->intended(match ($user->role) {
+                'admin' => route('admin.dashboard'),
+                'wali_kelas' => route('wali.dashboard'),
+                'kepala_sekolah' => route('kepala.dashboard'),
+                'siswa' => route('siswa.dashboard'),
+                default => route('dashboard'),
+            });
+        } catch (ValidationException $e) {
+            return back()->withErrors([
+                'email' => 'Email atau password salah.',
+            ])->withInput();
+        }
     }
 
     /**

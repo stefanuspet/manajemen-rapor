@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('guru', function (Blueprint $table) {
             $table->id();
-            $table->integer("nip");
+            $table->bigInteger("nip")->unique();
             $table->string("nama");
-            $table->unsignedBigInteger("user_id");
+            $table->unsignedBigInteger("user_id")->nullable(true);
 
-            $table->foreign("user_id")->references("id")->on("users");
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->timestamps();
         });
     }

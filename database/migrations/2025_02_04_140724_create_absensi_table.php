@@ -16,6 +16,7 @@ return new class extends Migration
             $table->enum("status", ["sakit", "izin", "Alfa"]);
             $table->unsignedBigInteger("siswa_id");
             $table->unsignedBigInteger("semester_id");
+            $table->date("tanggal_absensi");
 
             $table->foreign("siswa_id")->references("id")->on("siswa");
             $table->foreign("semester_id")->references("id")->on("semester");

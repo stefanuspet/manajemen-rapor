@@ -12,6 +12,6 @@ class NilaiExtraSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        
     }
 }

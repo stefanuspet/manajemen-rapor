@@ -1,13 +1,13 @@
-import Checkbox from "@/Components/Checkbox";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
-import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import GuestLayout from "@/Layouts/GuestLayout";
-import { Head, Link, useForm } from "@inertiajs/react";
+import { Head, useForm, usePage } from "@inertiajs/react";
+import { useEffect } from "react";
 
-export default function Login({ status, canResetPassword }) {
-    const { data, setData, post, processing, errors, reset } = useForm({
+
+export default function Login() {
+    const { data, setData, post, errors, reset } = useForm({
         email: "",
         password: "",
         remember: false,
@@ -21,79 +21,60 @@ export default function Login({ status, canResetPassword }) {
         });
     };
 
+    const user = usePage().props.auth.user;
+
+    useEffect(() => {
+        if (user) {
+            if (user.role === "admin") {
+                return window.location.replace(route("admin.dashboard"));
+            } else if (user.role === "siswa") {
+                return window.location.replace(route("siswa.dashboard"));
+            } else if (user.role === "wali_kelas") {
+                return window.location.replace(route("wali.dashboard"));
+            } else if (user.role === "kepala_sekolah") {
+                return window.location.replace(route("kepala.dashboard"));
+            }
+        }
+    });
+
     return (
         <GuestLayout>
             <Head title="Log in" />
 
-            {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
-                    {status}
-                </div>
-            )}
-
-            <form onSubmit={submit}>
+            <form onSubmit={submit} className="space-y-4 md:space-y-6">
                 <div>
                     <InputLabel htmlFor="email" value="Email" />
-
                     <TextInput
                         id="email"
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        isFocused={true}
+                        autoComplete="email"
                         onChange={(e) => setData("email", e.target.value)}
                     />
-
-                    <InputError message={errors.email} className="mt-2" />
                 </div>
-
-                <div className="mt-4">
+                <div>
                     <InputLabel htmlFor="password" value="Password" />
-
                     <TextInput
                         id="password"
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="current-password"
+                        autoComplete="new-password"
                         onChange={(e) => setData("password", e.target.value)}
+                        required
                     />
-
-                    <InputError message={errors.password} className="mt-2" />
                 </div>
-
-                <div className="mt-4 block">
-                    <label className="flex items-center">
-                        <Checkbox
-                            name="remember"
-                            checked={data.remember}
-                            onChange={(e) =>
-                                setData("remember", e.target.checked)
-                            }
-                        />
-                        <span className="ms-2 text-sm text-gray-600">
-                            Remember me
-                        </span>
-                    </label>
-                </div>
-
-                <div className="mt-4 flex items-center justify-end">
-                    {canResetPassword && (
-                        <Link
-                            href={route("password.request")}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        >
-                            Forgot your password????
-                        </Link>
-                    )}
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
-                </div>
+                <InputError
+                    className="text-center"
+                    message={errors.email || errors.email}
+                />
+                <button
+                    type="submit"
+                    className="w-full text-white bg-blue-500 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                >
+                    Login
+                </button>
             </form>
         </GuestLayout>
     );

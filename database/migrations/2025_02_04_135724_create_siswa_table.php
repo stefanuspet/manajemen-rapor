@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('siswa', function (Blueprint $table) {
             $table->id();
-            $table->integer("nisn");
+            $table->integer("nisn")->unique();
             $table->string("nama");
             $table->unsignedBigInteger("kelas_id");
-            $table->unsignedBigInteger("jurusan_id");
+            $table->unsignedBigInteger("user_id")->nullable(true);
 
             $table->foreign("kelas_id")->references("id")->on("kelas");
-            $table->foreign("jurusan_id")->references("id")->on("jurusan");
+            $table->foreign("user_id")->references("id")->on("users")->onDelete("set null");
             $table->timestamps();
         });
     }

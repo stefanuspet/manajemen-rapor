@@ -15,10 +15,12 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger("extra_id");
             $table->unsignedBigInteger("siswa_id");
-            $table->integer("nilai");
+            $table->unsignedBigInteger("semester_id");
+            $table->String("Keterangan")->nullable(true);
 
             $table->foreign("extra_id")->references("id")->on("extra");
             $table->foreign("siswa_id")->references("id")->on("siswa");
+            $table->foreign("semester_id")->references("id")->on("semester");
             $table->timestamps();
         });
     }
